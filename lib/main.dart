@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'screens/settings_screen.dart';
-import 'books_manager.dart';
-import 'db/books.dart';
-import 'screens/library_screen.dart';
 import 'package:go_router/go_router.dart';
+import 'books_manager.dart';
+import 'pages_manager.dart';
+import 'screens/library_screen.dart';
+import 'screens/settings_screen.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -36,7 +37,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => BookManager(BooksDb()),
+      create: (context) => BookManager(),
       child: MaterialApp.router(
         routerConfig: _router,
         title: 'Flutter Demo',

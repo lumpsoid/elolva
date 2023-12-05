@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../book.dart';
+import '../pages_manager.dart';
+import '../screens/book_reader.dart' show ReaderPage;
 
 class BookCard extends StatelessWidget {
   final Book book;
@@ -25,7 +28,16 @@ class BookCard extends StatelessWidget {
         title: InkWell(
           onTap: () {
             // Handle tap action here
-            print('Text tapped!');
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (BuildContext context) {
+                  return ChangeNotifierProvider(
+                      create: (context) => PagesManager(book),
+                      child: ReaderPage(),
+                  );
+                },
+              ),
+            );
           },
           child: Text(
             book.name,
