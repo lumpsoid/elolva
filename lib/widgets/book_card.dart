@@ -22,10 +22,16 @@ class BookCard extends StatelessWidget {
       ),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
-        title: Text(
-          book.name,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
+        title: InkWell(
+          onTap: () {
+            // Handle tap action here
+            print('Text tapped!');
+          },
+          child: Text(
+            book.name,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
         trailing: IconButton(
