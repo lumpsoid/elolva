@@ -1,11 +1,18 @@
+import 'package:flutter/cupertino.dart';
+
 import 'db/books.dart' show BooksDb;
 import 'book.dart' show Book;
 
-class BookManager {
+class BookManager extends ChangeNotifier {
   final BooksDb _booksDb;
-  static List<int> booksId = [];
+  static List<Book> _booksList = [];
+  List<Book> get booksList => _booksList;
 
-  BookManager(this._booksDb);
+  BookManager(this._booksDb) {
+    Future.delayed(Duration.zero, () async {
+      await updateBookList();
+    });
+  }
 
   Future<List<int>> getIds() async {
     List<Map<String, dynamic>> bookData = await _booksDb.getIds();
@@ -14,14 +21,24 @@ class BookManager {
   }
 
   Future<void> updateBookList() async {
-    List<Map<String, dynamic>> bookData = await _booksDb.getIds();
-    List<int> ids = bookData.map((map) => map['id'] as int).toList();
-    booksId = ids;
+    List<Map<String, dynamic>> bookData = await _booksDb.getBooks();
+    List<Book> books = bookData.map((data) => Book(
+      id: data['id'],
+      name: data['name'],
+      author: data['author'],
+      percent: data['percent'],
+      dateCreated: data['date_created'],
+      dateCompleted: data['date_completed'],
+      dateLast: data['date_last'],
+    )).toList();
+    _booksList = books;
+    notifyListeners();
   }
 
-  Future<void> addId(int id) async {
-    booksId.add(id);
-  }
+  // Future<void> addId(int id) async {
+  //   _booksList.add(id);
+  //   notifyListeners();
+  // }
 
   Future<List<Book>> getBooks() async {
     List<Map<String, dynamic>> bookData = await _booksDb.getBooks();
@@ -36,11 +53,13 @@ class BookManager {
     )).toList();
   }
 
-  Future<int> createBook(String bookName, String bookAuthor) async {
+  Future<Book> createBook(String bookName, String bookAuthor) async {
     Book book = Book(name: bookName, author: bookAuthor, percent: 0);
-    // TODO book text is missing
+    // TODO add book text to form
     await _booksDb.insertBookMeta(await book.toBookMeta());
-    return book.id;
+    _booksList.add(book);
+    notifyListeners();
+    return book;
   }
 
   Future<Book> getBookInfo(int id) async {

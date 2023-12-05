@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import '../screens/settings_screen.dart' show SettingsScreen;
-import '../screens/library_screen.dart' show MyHomePage;
+import 'package:go_router/go_router.dart';
 
 class MainNavBar extends StatelessWidget {
   const MainNavBar({
@@ -24,26 +23,13 @@ class MainNavBar extends StatelessWidget {
           Expanded(
             child: IconButton(
               icon: const Icon(Icons.library_books_outlined),
-              onPressed: () {
-                // Handle book button press
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const MyHomePage()),
-                );
-              },
+              onPressed: () => context.go('/library'),
             ),
           ),
           Expanded(
             child: IconButton(
               icon: const Icon(Icons.settings_outlined),
-              onPressed: () {
-                // Handle profile button press
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const SettingsScreen()),
-                );
-              },
+              onPressed: () => context.go('/settings'),
             ),
           ),
         ],

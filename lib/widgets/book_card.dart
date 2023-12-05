@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
+import '../book.dart';
 
 class BookCard extends StatelessWidget {
-  final String bookName;
-  final VoidCallback onOptionsPressed;
-  final bool isLoading;
+  final Book book;
 
   // Constructor to receive bookName, the callback for options press, and loading state
   const BookCard({
     super.key,
-    required this.bookName,
-    required this.onOptionsPressed,
-    required this.isLoading,
+    required this.book
   });
 
   @override
@@ -25,20 +22,21 @@ class BookCard extends StatelessWidget {
       ),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
-        leading: isLoading
-            ? const CircularProgressIndicator()
-            : null,
-        title: Text(
-          bookName,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
+        title: InkWell(
+          onTap: () {
+            // Handle tap action here
+            print('Text tapped!');
+          },
+          child: Text(
+            book.name,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
-        trailing: isLoading
-          ? null
-          : IconButton(
-            icon: const Icon(Icons.more_vert),
-            onPressed: onOptionsPressed,
+        trailing: IconButton(
+          icon: const Icon(Icons.more_vert),
+          onPressed: () {},
         ),
       ),
     );
