@@ -41,6 +41,8 @@ class LibraryWidget extends StatelessWidget {
               ],
             ),
             actions: [
+              // TODO is there a way to create a new dialog? or some kind of tooltip
+              // that name is empty
               ElevatedButton(
                 onPressed: () async {
                   if (bookName.isNotEmpty) {
