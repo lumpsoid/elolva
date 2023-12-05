@@ -23,7 +23,7 @@ class MainNavBar extends StatelessWidget {
           Expanded(
             child: IconButton(
               icon: const Icon(Icons.library_books_outlined),
-              onPressed: () => context.go('/'),
+              onPressed: () => context.go('/library'),
             ),
           ),
           Expanded(
