@@ -12,20 +12,19 @@ void main() {
 
 /// The route configuration.
 final GoRouter _router = GoRouter(
+  initialLocation: '/library',
   routes: <RouteBase>[
     GoRoute(
-      path: '/',
+      path: '/library',
       builder: (BuildContext context, GoRouterState state) {
         return const LibraryWidget();
       },
-      routes: <RouteBase>[
-        GoRoute(
-          path: 'settings',
-          builder: (BuildContext context, GoRouterState state) {
-            return const SettingsScreen();
-          },
-        ),
-      ],
+    ),
+    GoRoute(
+      path: '/settings',
+      builder: (BuildContext context, GoRouterState state) {
+        return const SettingsScreen();
+      },
     ),
   ],
 );
