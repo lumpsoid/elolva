@@ -1,14 +1,13 @@
-import 'package:flutter/cupertino.dart';
-
+import 'package:flutter/material.dart';
 import 'db/books.dart' show BooksDb;
 import 'book.dart' show Book;
 
 class BookManager extends ChangeNotifier {
-  final BooksDb _booksDb;
+  static BooksDb _booksDb = BooksDb();
   static List<Book> _booksList = [];
   List<Book> get booksList => _booksList;
 
-  BookManager(this._booksDb) {
+  BookManager() {
     Future.delayed(Duration.zero, () async {
       await updateBookList();
     });
@@ -50,10 +49,14 @@ class BookManager extends ChangeNotifier {
       dateCreated: data['date_created'],
       dateCompleted: data['date_completed'],
       dateLast: data['date_last'],
+      path: data['path'],
     )).toList();
   }
 
-  Future<Book> createBook(String bookName, String bookAuthor) async {
+  Future<Book> createBook(
+      String bookName,
+      String bookAuthor,
+      String pathBook) async {
     Book book = Book(name: bookName, author: bookAuthor, percent: 0);
     // TODO add book text to form
     await _booksDb.insertBookMeta(await book.toBookMeta());
@@ -74,6 +77,7 @@ class BookManager extends ChangeNotifier {
         dateCreated: bookInfo['date_created'],
         dateCompleted: bookInfo['date_completed'],
         dateLast: bookInfo['date_last'],
+        path: bookInfo['path'],
       );
       return book;
     } else {

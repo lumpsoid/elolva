@@ -13,7 +13,8 @@ class Book {
   late String dateCreated;
   late String dateCompleted;
   late int dateLast;
-  late String? text;
+  late String path;
+  late String text;
 
   Book({
     int? id,
@@ -23,7 +24,8 @@ class Book {
     String? dateCreated,
     this.dateCompleted = '',
     int? dateLast,
-    this.text
+    this.path = '',
+    this.text = ''
   }) : id = id ?? DateTime.now().microsecondsSinceEpoch {
     final DateTime dateTime = DateTime.fromMicrosecondsSinceEpoch(this.id);
     if (dateCreated == null) {
@@ -46,7 +48,8 @@ class Book {
       'percent': percent,
       'date_created': dateCreated,
       'date_completed': dateCompleted,
-      'date_last': dateLast
+      'date_last': dateLast,
+      'path': path
     };
   }
 

@@ -48,7 +48,8 @@ class BooksDb {
         percent INTEGER,
         date_created TEXT,
         date_completed TEXT,
-        date_last INTEGER
+        date_last INTEGER,
+        path TEXT
       )
     ''');
 
@@ -81,6 +82,11 @@ class BooksDb {
   Future<List<Map<String, dynamic>>> getBookMeta(int id) async {
     Database dbClient = await db;
     return await dbClient.query('books_meta', where: 'id = ?', whereArgs: [id]);
+  }
+
+  Future<List<Map<String, dynamic>>> getBookText(int id) async {
+    Database dbClient = await db;
+    return await dbClient.query('books_text', where: 'id = ?', whereArgs: [id]);
   }
 
   Future<List<Map<String, dynamic>>> getIds() async {
