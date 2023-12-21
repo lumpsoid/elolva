@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'books_manager.dart';
-import 'pages_manager.dart';
-import 'screens/library_screen.dart';
-import 'screens/settings_screen.dart';
-
+import 'package:test_lwt_port/library/library.dart';
+import 'package:test_lwt_port/library_repository.dart';
+import 'package:test_lwt_port/simple_blog_observer.dart';
+import 'settings/settings_screen.dart';
 
 void main() {
+  Bloc.observer = const SimpleBlocObserver();
   runApp(const MyApp());
 }
 
@@ -18,7 +18,7 @@ final GoRouter _router = GoRouter(
     GoRoute(
       path: '/library',
       builder: (BuildContext context, GoRouterState state) {
-        return const LibraryWidget();
+        return const LibraryScreen();
       },
     ),
     GoRoute(
@@ -36,16 +36,15 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => BookManager(),
-      child: MaterialApp.router(
-        routerConfig: _router,
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
-          useMaterial3: true,
-        )
-      )
-    );
+    return BlocProvider(
+        create: (context) =>
+            LibraryBloc(LibraryRepository())..add(LibraryStarted()),
+        child: MaterialApp.router(
+            routerConfig: _router,
+            title: 'Flutter Demo',
+            theme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+              useMaterial3: true,
+            )));
   }
 }
