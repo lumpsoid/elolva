@@ -3,6 +3,7 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'package:test_lwt_port/config.dart';
+import 'package:test_lwt_port/dictionary/dictionary.dart';
 import 'package:test_lwt_port/library/library.dart';
 
 class LibraryRepository {
@@ -49,6 +50,7 @@ class LibraryRepository {
         name TEXT,
         author TEXT,
         percent INTEGER,
+        page_last INTEGER,
         date_created TEXT,
         date_completed TEXT,
         date_last INTEGER,
@@ -62,6 +64,24 @@ class LibraryRepository {
         id INTEGER PRIMARY KEY,
         text TEXT,
         FOREIGN KEY (id) REFERENCES books_meta(id)
+      )
+    ''');
+
+    // Create words table
+    await db.execute('''
+      CREATE TABLE words (
+        original TEXT PRIMARY KEY,
+        translation TEXT,
+        pronunciation TEXT,
+        state TEXT
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE words_examples (
+        original TEXT PRIMARY KEY,
+        example TEXT,
+        FOREIGN KEY (original) REFERENCES words(original)
       )
     ''');
   }
@@ -84,37 +104,14 @@ class LibraryRepository {
       'SELECT * FROM books_meta ORDER BY id LIMIT $itemsPerPage OFFSET $startingIndex',
     );
     if (result.isEmpty) return [];
-    return result
-        .map<Book>((item) => Book(
-              id: item['id'],
-              dateCompleted: item['date_completed'],
-              dateCreated: item['date_created'],
-              dateLast: item['date_last'],
-              name: item['name'],
-              author: item['author'],
-              percent: item['percent'],
-              path: item['path'],
-              text: '',
-            ))
-        .toList();
+    return result.map<Book>((item) => Book.fromDb(item)).toList();
   }
 
   /// Get list of book objects that are in the DB
   Future<List<Book>> fetchBooksAll() async {
     Database dbClient = await db;
     List<Map<String, dynamic>> result = await dbClient.query('books_meta');
-    return List.generate(
-        result.length,
-        (index) => Book(
-            id: result[index]['id'],
-            dateCompleted: result[index]['date_completed'],
-            dateCreated: result[index]['date_created'],
-            dateLast: result[index]['date_last'],
-            name: result[index]['name'],
-            author: result[index]['author'],
-            path: result[index]['path'],
-            text: '',
-            percent: result[index]['percent']));
+    return List.generate(result.length, (index) => Book.fromDb(result[index]));
   }
 
   Future<Book> fetchBookMeta(int id) async {
@@ -125,16 +122,7 @@ class LibraryRepository {
       throw StateError('There is not such ID in DB');
     }
     Map<String, dynamic> bookData = result[0];
-    return Book(
-        id: bookData['id'],
-        dateCompleted: bookData['date_completed'],
-        dateCreated: bookData['date_created'],
-        dateLast: bookData['date_last'],
-        name: bookData['name'],
-        author: bookData['author'],
-        path: bookData['path'],
-        text: '',
-        percent: bookData['percent']);
+    return Book.fromDb(bookData);
   }
 
   Future<Book> fetchBookText(Book book) async {
@@ -166,6 +154,19 @@ class LibraryRepository {
     await dbClient.delete('books_text', where: 'id = ?', whereArgs: [id]);
     return await dbClient
         .delete('books_meta', where: 'id = ?', whereArgs: [id]);
+  }
+
+  Future<(List<String>, Map<String, Word>)> fetchWordsAll() async {
+    Database dbClient = await db;
+    List<Map<String, dynamic>> result = await dbClient.query('words');
+    List<String> listWords = [];
+    Map<String, Word> dictionary = {};
+    for (Map<String, dynamic> map in result) {
+      Word word = Word.fromDb(map);
+      listWords.add(word.original);
+      dictionary.addAll({word.original: word});
+    }
+    return (listWords, dictionary);
   }
 
   Future<void> close() async {

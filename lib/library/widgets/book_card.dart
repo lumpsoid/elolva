@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:test_lwt_port/library/library.dart';
+import 'package:test_lwt_port/reader/reader.dart';
 
 class BookCard extends StatelessWidget {
   final Book book;
@@ -20,14 +23,15 @@ class BookCard extends StatelessWidget {
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
         title: InkWell(
-          onTap: () {
-            // Handle tap action here
-          },
           child: Text(book.name),
+          onLongPress: () {},
         ),
-        trailing: IconButton(
-          icon: const Icon(Icons.more_vert),
-          onPressed: () {},
+        trailing: TextButton(
+          child: const Text('Open'),
+          onPressed: () {
+            context.read<ReaderBloc>().add(ReaderOpenBook(book: book));
+            context.go('/reader');
+          },
         ),
       ),
     );

@@ -42,6 +42,8 @@ dependencies:
   equatable: ^2.0.5
   meta: ^1.10.0
   bloc: ^8.1.2
+  mozhi_api:
+    path: packages/mozhi_api
 
 dev_dependencies:
   flutter_test:

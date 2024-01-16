@@ -15,21 +15,19 @@ class MainNavBar extends StatelessWidget {
           Expanded(
             child: IconButton(
               icon: const Icon(Icons.abc),
-              onPressed: () {
-                // Handle home button press
-              },
+              onPressed: () => context.go('/dictionary'),
             ),
           ),
           Expanded(
             child: IconButton(
-              icon: const Icon(Icons.library_books_outlined),
+              icon: const Icon(Icons.menu_book_rounded),
+              onPressed: () => context.go('/reader'),
+            ),
+          ),
+          Expanded(
+            child: IconButton(
+              icon: const Icon(Icons.format_list_bulleted_rounded),
               onPressed: () => context.go('/library'),
-            ),
-          ),
-          Expanded(
-            child: IconButton(
-              icon: const Icon(Icons.settings_outlined),
-              onPressed: () => context.go('/settings'),
             ),
           ),
         ],

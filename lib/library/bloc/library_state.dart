@@ -13,15 +13,15 @@ final class LibraryLoading extends LibraryState {
 final class LibraryLoaded extends LibraryState {
   const LibraryLoaded({required this.library});
 
-  final Library library;
+  final List<Book> library;
   bool get hasReachedMax {
-    if (library.books.isEmpty || library.books.length < itemsPerPage) {
+    if (library.isEmpty || library.length < itemsPerPage) {
       return true;
     }
     return false;
   }
 
-  LibraryLoaded copyWith({Library? library, bool? hasReachedMax}) {
+  LibraryLoaded copyWith({List<Book>? library, bool? hasReachedMax}) {
     return LibraryLoaded(library: library ?? this.library);
   }
 

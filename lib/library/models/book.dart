@@ -10,6 +10,7 @@ class Book extends Equatable {
   final String name;
   final String author;
   final int percent;
+  final int pageLast;
   final String dateCreated;
   final String dateCompleted;
   final int dateLast;
@@ -21,6 +22,7 @@ class Book extends Equatable {
       required this.name,
       this.author = '',
       this.percent = 0,
+      this.pageLast = 0,
       String? dateCreated,
       this.dateCompleted = '',
       int? dateLast,
@@ -30,11 +32,24 @@ class Book extends Equatable {
         dateCreated = dateCreated ?? DateTime.now().toIso8601String(),
         dateLast = dateLast ?? DateTime.now().microsecondsSinceEpoch;
 
+  Book.fromDb(Map<String, dynamic> item)
+      : id = item['id'],
+        name = item['name'],
+        author = item['author'],
+        percent = item['percent'],
+        pageLast = item['page_last'],
+        dateCreated = item['date_created'],
+        dateCompleted = item['date_completed'],
+        dateLast = item['date_last'],
+        path = item['path'],
+        text = '';
+
   Book copyWith(
       {int? id,
       String? name,
       String? author,
       int? percent,
+      int? pageLast,
       String? dateCreated,
       String? dateCompleted,
       int? dateLast,
@@ -44,6 +59,7 @@ class Book extends Equatable {
       id: id ?? this.id,
       name: name ?? this.name,
       percent: percent ?? this.percent,
+      pageLast: pageLast ?? this.pageLast,
       author: author ?? this.author,
       dateCompleted: dateCompleted ?? this.dateCompleted,
       dateCreated: dateCreated ?? this.dateCreated,
@@ -59,6 +75,7 @@ class Book extends Equatable {
       'name': name,
       'author': author,
       'percent': percent,
+      'page_last': pageLast,
       'date_created': dateCreated,
       'date_completed': dateCompleted,
       'date_last': dateLast,
@@ -76,6 +93,7 @@ class Book extends Equatable {
         name,
         author,
         percent,
+        pageLast,
         dateCreated,
         dateCompleted,
         dateLast,

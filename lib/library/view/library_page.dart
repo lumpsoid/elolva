@@ -12,7 +12,7 @@ class LibraryScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('My books'),
+        title: const Text('Library'),
       ),
       body: const LibraryList(),
       bottomNavigationBar: const MainNavBar(),

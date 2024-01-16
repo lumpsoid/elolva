@@ -12,19 +12,19 @@ class LibraryList extends StatelessWidget {
         case LibraryLoading():
           return const Center(child: CircularProgressIndicator());
         case LibraryLoaded():
-          if (state.library.books.isEmpty) {
+          if (state.library.isEmpty) {
             return const Center(child: Text('no books'));
           }
           return ListView.builder(
               itemCount: state.hasReachedMax
-                  ? state.library.books.length
-                  : state.library.books.length + 1,
+                  ? state.library.length
+                  : state.library.length + 1,
               itemBuilder: (context, index) {
-                if (index >= state.library.books.length) {
+                if (index >= state.library.length) {
                   context.read<LibraryBloc>().add(LibraryBookFetch(index));
                   return const BottomLoader();
                 }
-                return BookCard(book: state.library.books[index]);
+                return BookCard(book: state.library[index]);
               });
         case LibraryError():
           return const Center(child: Text('Error'));

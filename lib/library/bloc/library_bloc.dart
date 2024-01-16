@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:test_lwt_port/library/library.dart';
@@ -14,16 +16,16 @@ class LibraryBloc extends Bloc<LibraryEvent, LibraryState> {
     on<LibraryBookAdded>(_onBookAdded);
     on<LibraryBookRemoved>(_onBookRemoved);
     on<LibraryBookFetch>(_onFetchBooks);
+    // on<LibraryTextAdded>(_onTextAdded);
   }
 
   final LibraryRepository libraryRepository;
 
   Future<void> _onStarted(
       LibraryStarted event, Emitter<LibraryState> emit) async {
-    emit(LibraryLoading());
     final List<Book> books = await libraryRepository.fetchBooks(0);
     try {
-      emit(LibraryLoaded(library: Library(books: books)));
+      emit(LibraryLoaded(library: books));
     } catch (_) {
       emit(LibraryError());
     }
@@ -36,7 +38,7 @@ class LibraryBloc extends Bloc<LibraryEvent, LibraryState> {
         await libraryRepository.fetchBooks(event.startingIndex);
     if (state is LibraryLoading) {
       try {
-        emit(LibraryLoaded(library: Library(books: books)));
+        emit(LibraryLoaded(library: books));
       } catch (_) {
         emit(LibraryError());
       }
@@ -44,10 +46,8 @@ class LibraryBloc extends Bloc<LibraryEvent, LibraryState> {
       if (state.hasReachedMax) return;
       try {
         books.isEmpty
-            ? emit(LibraryLoaded(
-                library: Library(books: [...state.library.books])))
-            : emit(LibraryLoaded(
-                library: Library(books: [...state.library.books, ...books])));
+            ? emit(LibraryLoaded(library: [...state.library]))
+            : emit(LibraryLoaded(library: [...state.library, ...books]));
       } catch (_) {
         emit(LibraryError());
       }
@@ -59,11 +59,16 @@ class LibraryBloc extends Bloc<LibraryEvent, LibraryState> {
     final state = this.state;
     if (state is LibraryLoaded) {
       try {
-        libraryRepository.insertBookMeta(event.book);
+        File file = File(event.book.path);
+        String fileContent = await file.readAsString();
+
+        Book book = event.book.copyWith(text: fileContent);
+
         if (state.hasReachedMax) {
-          emit(LibraryLoaded(
-              library: Library(books: [...state.library.books, event.book])));
+          emit(LibraryLoaded(library: [...state.library, event.book]));
         }
+        libraryRepository.insertBookMeta(book);
+        libraryRepository.insertBookText(book);
       } catch (_) {
         emit(LibraryError());
       }
@@ -76,12 +81,19 @@ class LibraryBloc extends Bloc<LibraryEvent, LibraryState> {
     if (state is LibraryLoaded) {
       try {
         libraryRepository.deleteBook(event.book.id);
-        emit(LibraryLoaded(
-            library:
-                Library(books: [...state.library.books]..remove(event.book))));
+        emit(LibraryLoaded(library: [...state.library]..remove(event.book)));
       } catch (_) {
         emit(LibraryError());
       }
     }
   }
+
+  // Future<void> _onTextAdded(
+  //     LibraryTextAdded event, Emitter<LibraryState> emit) async {
+  //   var state = this.state;
+  //   if (state is LibraryLoaded) {
+  //     List<Book> libraryUpdated = [...state.library];
+  //     emit(LibraryLoaded(library: [...state.library]));
+  //   }
+  // }
 }

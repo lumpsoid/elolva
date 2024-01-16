@@ -46,3 +46,13 @@ final class LibraryBookUpdated extends LibraryEvent {
   @override
   List<Object> get props => [book];
 }
+
+final class LibraryTextAdded extends LibraryEvent {
+  const LibraryTextAdded(this.book, this.text);
+
+  final Book book;
+  final String text;
+
+  @override
+  List<Object> get props => [book];
+}
